@@ -22,29 +22,6 @@ public class PdfUtils {
     private PdfUtils() {
     }
 
-    /**
-     * Busca una plantilla Jasper (jrxml) la compila y genera PDF.
-     *
-     * @param templateRoute Ruta de la plantilla.
-     * @param parameters    Parámetros a pasar a la plantilla.
-     * @return Arreglo de bytes con el cotenido del PDF.
-     * @throws JRException Sí ocurrió un error durante la generación del PDF con
-     *                     Jasper.
-     * @throws IOException Sí no se encontró la ruta de la plantilla.
-     */
-    public static JasperDTO generatePdfFromJrxml(String templateRoute, Map<String, Object> parameters)
-            throws JRException, IOException {
-        log.info("[PdfUtils] -> [generatePdfFromJrxml]");
-        try (InputStream inputStream = new ByteArrayInputStream(templateRoute.getBytes(StandardCharsets.UTF_8))) {
-            JasperReport report = JasperCompileManager.compileReport(inputStream);
-            JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
-
-            return JasperDTO.builder()
-                    .jasperByte(JasperExportManager.exportReportToPdf(print))
-                    .pages(print.getPages().size())
-                    .build();
-        }
-    }
 
     public static String getInternalFile(String filePath) throws Exception {
         log.info("Loading file {}....", filePath);
