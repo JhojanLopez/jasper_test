@@ -63,11 +63,19 @@ public class JasperReportManagerImpl implements JasperReportManager {
      * @throws IOException Sí no se encontró la ruta de la plantilla.
      */
     @Override
-    public JasperDTO generatePdf(Map<String, Object> parameters)
-            throws JRException, IOException {
+    public JasperDTO generatePdf(boolean isDefault, String path, Map<String, Object> parameters)
+            throws Exception {
         log.info("[JasperReportManagerImpl] -> [generatePdfFromJrxml]");
-        JasperPrint print = JasperFillManager.fillReport(defaultReport, parameters, new JREmptyDataSource());
-
+        JasperPrint print;
+        if(isDefault) {
+            print = JasperFillManager.fillReport(defaultReport, parameters, new JREmptyDataSource());
+        }else {
+            try (InputStream inputStream = new ByteArrayInputStream(PdfUtils
+                    .getInternalFile(path).getBytes(StandardCharsets.UTF_8))) {
+                JasperReport report = JasperCompileManager.compileReport(inputStream);
+                print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+            }
+        }
         return JasperDTO.builder()
                 .jasperByte(JasperExportManager.exportReportToPdf(print))
                 .pages(print.getPages().size())

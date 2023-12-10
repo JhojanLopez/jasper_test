@@ -7,5 +7,5 @@ import java.io.IOException;
 import java.util.Map;
 
 public interface JasperReportManager {
-    JasperDTO generatePdf(Map<String, Object> parameters) throws JRException, IOException;
+    JasperDTO generatePdf(boolean isDefault, String internalFile, Map<String, Object> parameters) throws Exception;
 }
