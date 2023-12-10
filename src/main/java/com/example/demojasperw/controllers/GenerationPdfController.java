@@ -1,6 +1,7 @@
 package com.example.demojasperw.controllers;
 
 import com.example.demojasperw.models.JasperDTO;
+import com.example.demojasperw.models.RequestPdfDto;
 import com.example.demojasperw.services.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,15 @@ public class GenerationPdfController {
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("attachment", "archivo.pdf");
         JasperDTO jasperDTO = reportService.generatePdfReport(paramaters);
+        return new ResponseEntity<>(jasperDTO.getJasperByte(), headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/pdf-no-jr-loader")
+    public ResponseEntity<byte[]> generatePdfNoJrLoader(@RequestBody RequestPdfDto requestPdfDto) throws Exception {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "archivo.pdf");
+        JasperDTO jasperDTO = reportService.generatePdfReportNoJrLoader(requestPdfDto.getTemplate(), requestPdfDto.getParameters());
         return new ResponseEntity<>(jasperDTO.getJasperByte(), headers, HttpStatus.OK);
     }
 }
